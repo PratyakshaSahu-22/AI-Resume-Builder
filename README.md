@@ -420,8 +420,8 @@ Runs 77 tests covering:
 ## 👨‍💻 Author
 
 **Pratyaksha Sahu**
-- GitHub: [@your-username](https://github.com/PratyakshaSahu-22)
-- LinkedIn: [your-linkedin](https://www.linkedin.com/in/pratyaksha-sahu-a70939344)
+- GitHub: [@PratyakshaSahu-22](https://github.com/PratyakshaSahu-22)
+- LinkedIn: [Pratyaksha Sahu](https://www.linkedin.com/in/pratyaksha-sahu-a70939344)
 
 ---
 
