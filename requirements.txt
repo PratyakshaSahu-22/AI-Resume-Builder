@@ -44,6 +44,8 @@ sentence-transformers==3.3.1
 # Utilities
 Pillow==11.0.0
 
+gunicorn
+
 # ─── Install spaCy model separately ──────────────────────────────────────────
 # After installing requirements, run:
 #   python -m spacy download en_core_web_sm
