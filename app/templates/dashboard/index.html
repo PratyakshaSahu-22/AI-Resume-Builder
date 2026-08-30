@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – AI Resume Builder{% endblock %}
+{% block content %}
+
+<!-- Welcome Header -->
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+  <div>
+    <h2 class="fw-bold mb-0">
+      <i class="bi bi-speedometer2 text-primary me-2"></i>Dashboard
+    </h2>
+    <p class="text-secondary mb-0">Welcome back, <strong>{{ user.username }}</strong>!</p>
+  </div>
+  <a href="{{ url_for('resume.generate') }}" class="btn btn-primary">
+    <i class="bi bi-plus-circle me-1"></i>Generate New Resume
+  </a>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center p-3">
+      <div class="fs-1 text-primary fw-bold">{{ resume_count }}</div>
+      <div class="text-secondary small">Resumes</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center p-3">
+      <div class="fs-1 text-success fw-bold">{{ cl_count }}</div>
+      <div class="text-secondary small">Cover Letters</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center p-3">
+      <div class="fs-1 text-warning fw-bold">{{ portfolio_count }}</div>
+      <div class="text-secondary small">Portfolios</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 shadow-sm text-center p-3">
+      <div class="fs-1 fw-bold {% if latest_resume and latest_resume.ats_score >= 70 %}text-success{% elif latest_resume and latest_resume.ats_score >= 45 %}text-warning{% else %}text-danger{% endif %}">
+        {% if latest_resume %}{{ latest_resume.ats_score | int }}{% else %}–{% endif %}
+      </div>
+      <div class="text-secondary small">Latest ATS Score</div>
+    </div>
+  </div>
+</div>
+
+{% if latest_resume %}
+<!-- ATS Score Bar -->
+<div class="card border-0 shadow-sm mb-4 p-4">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h6 class="fw-semibold mb-0"><i class="bi bi-graph-up-arrow me-2 text-primary"></i>Latest Resume ATS Score</h6>
+    <span class="badge bg-primary">{{ latest_resume.title }}</span>
+  </div>
+  <div class="progress" style="height:18px;">
+    <div class="progress-bar 
+      {% if latest_resume.ats_score >= 70 %}bg-success
+      {% elif latest_resume.ats_score >= 45 %}bg-warning
+      {% else %}bg-danger{% endif %}"
+      role="progressbar"
+      style="width: {{ latest_resume.ats_score }}%">
+      {{ latest_resume.ats_score | int }}%
+    </div>
+  </div>
+  <div class="d-flex justify-content-end mt-2">
+    <a href="{{ url_for('resume.edit', resume_id=latest_resume.id) }}" class="btn btn-sm btn-outline-primary me-2">
+      <i class="bi bi-pencil me-1"></i>Edit
+    </a>
+    <a href="{{ url_for('resume.preview', resume_id=latest_resume.id) }}" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-eye me-1"></i>Preview
+    </a>
+  </div>
+</div>
+{% endif %}
+
+<!-- Quick Actions -->
+<h5 class="fw-bold mb-3">Quick Actions</h5>
+<div class="row g-3 mb-4">
+  <div class="col-md-3 col-sm-6">
+    <a href="{{ url_for('profile.index') }}" class="card border-0 shadow-sm p-4 text-decoration-none text-center dashboard-action-card">
+      <i class="bi bi-person-circle fs-2 text-primary mb-2"></i>
+      <div class="fw-semibold text-dark">My Profile</div>
+      <div class="small text-secondary">Personal info, skills, projects</div>
+    </a>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <a href="{{ url_for('resume.generate') }}" class="card border-0 shadow-sm p-4 text-decoration-none text-center dashboard-action-card">
+      <i class="bi bi-file-earmark-text fs-2 text-success mb-2"></i>
+      <div class="fw-semibold text-dark">Resume Builder</div>
+      <div class="small text-secondary">Generate ATS-friendly resume</div>
+    </a>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <a href="{{ url_for('cover_letter.generate') }}" class="card border-0 shadow-sm p-4 text-decoration-none text-center dashboard-action-card">
+      <i class="bi bi-envelope-open-text fs-2 text-info mb-2"></i>
+      <div class="fw-semibold text-dark">Cover Letter</div>
+      <div class="small text-secondary">Personalised letters by AI</div>
+    </a>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <a href="{{ url_for('portfolio.generate') }}" class="card border-0 shadow-sm p-4 text-decoration-none text-center dashboard-action-card">
+      <i class="bi bi-briefcase-fill fs-2 text-warning mb-2"></i>
+      <div class="fw-semibold text-dark">Portfolio</div>
+      <div class="small text-secondary">Shareable digital portfolio</div>
+    </a>
+  </div>
+</div>
+
+<!-- Profile Completeness -->
+<div class="card border-0 shadow-sm p-4">
+  <h6 class="fw-semibold mb-3"><i class="bi bi-clipboard-check me-2 text-primary"></i>Profile Completeness</h6>
+  <div class="row g-2">
+    {% set checks = [
+      ('Full Name', profile and profile.full_name),
+      ('Phone', profile and profile.phone),
+      ('Education', profile and profile.education | length > 0),
+      ('Skills', profile and profile.skills | length > 0),
+      ('Projects', profile and profile.projects | length > 0),
+      ('Experience', profile and profile.experience | length > 0),
+    ] %}
+    {% for label, done in checks %}
+    <div class="col-6 col-md-4">
+      <div class="d-flex align-items-center gap-2 small {% if done %}text-success{% else %}text-secondary{% endif %}">
+        <i class="bi {% if done %}bi-check-circle-fill{% else %}bi-circle{% endif %}"></i>
+        {{ label }}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% set completed = checks | selectattr(1) | list | length %}
+  <div class="progress mt-3" style="height:8px;">
+    <div class="progress-bar bg-success" style="width:{{ (completed / checks|length * 100)|int }}%"></div>
+  </div>
+  <div class="small text-secondary mt-1">{{ completed }}/{{ checks|length }} sections completed</div>
+</div>
+
+{% endblock %}

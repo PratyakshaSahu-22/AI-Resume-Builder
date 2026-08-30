@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block title %}Resume Preview – {{ resume.title }}{% endblock %}
+{% block extra_css %}
+<style>
+  .resume-preview {
+    background: #fff;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 48px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .resume-name { font-size: 26px; font-weight: 700; color: #1e3a5f; }
+  .resume-contact { font-size: 12px; color: #6b7280; }
+  .resume-section-title {
+    font-size: 13px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: #1e3a5f; border-bottom: 2px solid #1e3a5f;
+    padding-bottom: 3px; margin-bottom: 10px; margin-top: 20px;
+  }
+  .resume-entry-title { font-weight: 600; font-size: 14px; }
+  .resume-entry-sub { color: #6b7280; font-size: 13px; }
+  .skill-chip {
+    display: inline-block; background: #f0f4ff; border: 1px solid #dbeafe;
+    color: #1e40af; border-radius: 4px; padding: 2px 10px;
+    font-size: 12px; margin: 2px 2px 2px 0;
+  }
+  @media print {
+    .no-print { display: none !important; }
+    .resume-preview { border: none; padding: 20px; }
+  }
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 no-print flex-wrap gap-2">
+  <h4 class="fw-bold mb-0"><i class="bi bi-eye text-primary me-2"></i>Resume Preview</h4>
+  <div class="d-flex gap-2 flex-wrap">
+    <a href="{{ url_for('resume.edit', resume_id=resume.id) }}" class="btn btn-outline-primary btn-sm">
+      <i class="bi bi-pencil me-1"></i>Edit
+    </a>
+    <a href="{{ url_for('resume.download', resume_id=resume.id) }}" class="btn btn-success btn-sm">
+      <i class="bi bi-download me-1"></i>Download PDF
+    </a>
+    <button onclick="window.print()" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-printer me-1"></i>Print
+    </button>
+  </div>
+</div>
+
+<div class="resume-preview shadow-sm">
+  <!-- Header -->
+  <div class="text-center mb-3">
+    <div class="resume-name">{{ content.personal.get('full_name') or user.username }}</div>
+    <div class="resume-contact mt-1">
+      {% if content.personal.get('phone') %}{{ content.personal.phone }} · {% endif %}
+      {{ user.email }}
+      {% if content.personal.get('location') %} · {{ content.personal.location }}{% endif %}
+    </div>
+    <div class="resume-contact">
+      {% if content.personal.get('linkedin') %}<a href="{{ content.personal.linkedin }}" target="_blank">LinkedIn</a>{% endif %}
+      {% if content.personal.get('github') %} · <a href="{{ content.personal.github }}" target="_blank">GitHub</a>{% endif %}
+      {% if content.personal.get('website') %} · <a href="{{ content.personal.website }}" target="_blank">Portfolio</a>{% endif %}
+    </div>
+  </div>
+
+  <!-- Summary -->
+  {% if content.get('summary') %}
+  <div class="resume-section-title">Professional Summary</div>
+  <p class="mb-0">{{ content.summary }}</p>
+  {% endif %}
+
+  <!-- Skills -->
+  {% if content.get('skills') %}
+  <div class="resume-section-title">Skills</div>
+  <div>
+    {% for skill in content.skills %}
+    <span class="skill-chip">{{ skill.get('name', '') }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Education -->
+  {% if content.get('education') %}
+  <div class="resume-section-title">Education</div>
+  {% for edu in content.education %}
+  <div class="d-flex justify-content-between mb-2">
+    <div>
+      <div class="resume-entry-title">{{ edu.degree }}{% if edu.field_of_study %} in {{ edu.field_of_study }}{% endif %}</div>
+      <div class="resume-entry-sub">{{ edu.institution }}</div>
+    </div>
+    <div class="text-end resume-entry-sub">
+      {{ edu.start_year or '' }} – {{ edu.end_year or 'Present' }}
+      {% if edu.grade %}<br/>{{ edu.grade }}{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <!-- Experience -->
+  {% if content.get('experience') %}
+  <div class="resume-section-title">Experience</div>
+  {% for exp in content.experience %}
+  <div class="mb-3">
+    <div class="d-flex justify-content-between">
+      <div class="resume-entry-title">{{ exp.role }} – {{ exp.company }}</div>
+      <div class="resume-entry-sub">{{ exp.start_date or '' }}{% if exp.end_date %} – {{ exp.end_date }}{% endif %}</div>
+    </div>
+    {% if exp.location %}<div class="resume-entry-sub">{{ exp.location }}</div>{% endif %}
+    {% if exp.description %}<p class="mb-0 mt-1 small">{{ exp.description }}</p>{% endif %}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <!-- Projects -->
+  {% if content.get('projects') %}
+  <div class="resume-section-title">Projects</div>
+  {% for proj in content.projects %}
+  <div class="mb-3">
+    <div class="resume-entry-title">
+      {{ proj.title }}
+      {% if proj.github_url %}<a href="{{ proj.github_url }}" target="_blank" class="small ms-2">[GitHub]</a>{% endif %}
+      {% if proj.live_url %}<a href="{{ proj.live_url }}" target="_blank" class="small ms-1">[Live]</a>{% endif %}
+    </div>
+    {% if proj.tech_stack %}
+    <div class="resume-entry-sub">{{ proj.tech_stack }}</div>
+    {% endif %}
+    <p class="mb-0 mt-1 small">{{ proj.get('enhanced') or proj.get('description') }}</p>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <!-- Certifications -->
+  {% if content.get('certifications') %}
+  <div class="resume-section-title">Certifications</div>
+  {% for cert in content.certifications %}
+  <div class="d-flex justify-content-between mb-1">
+    <div>
+      <span class="resume-entry-title">{{ cert.name }}</span>
+      {% if cert.issuing_org %}<span class="resume-entry-sub"> – {{ cert.issuing_org }}</span>{% endif %}
+    </div>
+    <div class="resume-entry-sub">{{ cert.issue_date or '' }}</div>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
+
+<!-- ATS Score Summary -->
+<div class="card border-0 shadow-sm mt-4 no-print">
+  <div class="card-body p-4">
+    <div class="row g-3 align-items-center">
+      <div class="col-md-4 text-center">
+        <div class="small text-secondary mb-1">ATS Score</div>
+        <div class="display-5 fw-bold {% if resume.ats_score >= 70 %}text-success{% elif resume.ats_score >= 45 %}text-warning{% else %}text-danger{% endif %}">
+          {{ resume.ats_score | int }}
+        </div>
+      </div>
+      {% if resume.match_score %}
+      <div class="col-md-4 text-center">
+        <div class="small text-secondary mb-1">JD Match</div>
+        <div class="display-5 fw-bold text-info">{{ resume.match_score | int }}%</div>
+      </div>
+      {% endif %}
+      {% if suggestions %}
+      <div class="col-md-4">
+        <div class="small fw-semibold mb-2"><i class="bi bi-lightbulb text-warning me-1"></i>Top Suggestions</div>
+        {% for s in suggestions[:3] %}
+        <div class="small text-secondary mb-1">• {{ s }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

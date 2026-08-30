@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Generate Portfolio – AI Resume Builder{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="text-center mb-4">
+      <i class="bi bi-briefcase-fill fs-1 text-warning"></i>
+      <h3 class="fw-bold mt-2">Generate Portfolio</h3>
+      <p class="text-secondary">Your projects, skills and experience will be transformed into a shareable digital portfolio.</p>
+    </div>
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <ul class="list-unstyled mb-4">
+          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>About section generated from your profile</li>
+          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>All your projects showcased with tech stacks</li>
+          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Skills organised by category</li>
+          <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Experience timeline included</li>
+          <li><i class="bi bi-check-circle-fill text-success me-2"></i>Shareable public URL when published</li>
+        </ul>
+        <form method="POST" action="{{ url_for('portfolio.generate') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-warning btn-lg fw-semibold text-white">
+              <i class="bi bi-stars me-2"></i>Generate My Portfolio
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Experience – AI Resume Builder{% endblock %}
+{% block content %}
+
+<ul class="nav nav-tabs mb-4">
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.index') }}">Personal</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.education') }}">Education</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.skills') }}">Skills</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.projects') }}">Projects</a></li>
+  <li class="nav-item"><a class="nav-link active" href="{{ url_for('profile.experience') }}"><i class="bi bi-briefcase me-1"></i>Experience</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.certifications') }}">Certifications</a></li>
+</ul>
+
+{% if profile.experience %}
+<div class="mb-4">
+  {% for exp in profile.experience %}
+  <div class="card border-0 shadow-sm mb-3">
+    <div class="card-body d-flex justify-content-between flex-wrap gap-2">
+      <div>
+        <h6 class="fw-bold mb-0">{{ exp.role }}</h6>
+        <div class="text-primary">{{ exp.company }}{% if exp.location %} · {{ exp.location }}{% endif %}</div>
+        <div class="small text-muted">
+          {{ exp.start_date or '?' }} – {% if exp.is_current %}Present{% else %}{{ exp.end_date or '?' }}{% endif %}
+        </div>
+        {% if exp.description %}<p class="mb-0 mt-1 small text-secondary">{{ exp.description }}</p>{% endif %}
+      </div>
+      <form method="POST" action="{{ url_for('profile.experience') }}" class="d-inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="action" value="delete"/>
+        <input type="hidden" name="exp_id" value="{{ exp.id }}"/>
+        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove?')">
+          <i class="bi bi-trash"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">No experience added yet. Internships, part-time jobs, and freelance work all count!</div>
+{% endif %}
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white py-3">
+    <h5 class="mb-0 fw-bold"><i class="bi bi-plus-circle me-2 text-primary"></i>Add Experience</h5>
+  </div>
+  <div class="card-body p-4">
+    <form method="POST" action="{{ url_for('profile.experience') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <input type="hidden" name="action" value="add"/>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Role / Position *</label>
+          <input type="text" name="role" class="form-control" required placeholder="Software Engineer Intern"/>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Company *</label>
+          <input type="text" name="company" class="form-control" required placeholder="Google, TCS, Startup Name"/>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Start Date</label>
+          <input type="text" name="start_date" class="form-control" placeholder="June 2023"/>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">End Date</label>
+          <input type="text" name="end_date" class="form-control" placeholder="Aug 2023"/>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Location</label>
+          <input type="text" name="location" class="form-control" placeholder="Bangalore / Remote"/>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" name="is_current" id="isCurrent" value="1"/>
+            <label class="form-check-label fw-semibold" for="isCurrent">Currently working here</label>
+          </div>
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold">Description / Key Responsibilities</label>
+          <textarea name="description" class="form-control" rows="3"
+                    placeholder="Describe your key responsibilities, achievements, and technologies used..."></textarea>
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Add Experience</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

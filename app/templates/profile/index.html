@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}My Profile – AI Resume Builder{% endblock %}
+{% block content %}
+
+<!-- Profile Sub-nav -->
+<ul class="nav nav-tabs mb-4">
+  <li class="nav-item"><a class="nav-link active" href="{{ url_for('profile.index') }}"><i class="bi bi-person me-1"></i>Personal</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.education') }}"><i class="bi bi-mortarboard me-1"></i>Education</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.skills') }}"><i class="bi bi-lightning me-1"></i>Skills</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.projects') }}"><i class="bi bi-code-slash me-1"></i>Projects</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.experience') }}"><i class="bi bi-briefcase me-1"></i>Experience</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.certifications') }}"><i class="bi bi-award me-1"></i>Certifications</a></li>
+</ul>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white border-bottom py-3">
+    <h5 class="mb-0 fw-bold"><i class="bi bi-person-circle me-2 text-primary"></i>Personal Details</h5>
+  </div>
+  <div class="card-body p-4">
+    <form method="POST" action="{{ url_for('profile.index') }}" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Full Name</label>
+          <input type="text" name="full_name" class="form-control"
+                 value="{{ profile.full_name or '' }}" placeholder="John Doe" maxlength="150"/>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Phone</label>
+          <input type="text" name="phone" class="form-control"
+                 value="{{ profile.phone or '' }}" placeholder="+91 9876543210" maxlength="20"/>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Location</label>
+          <input type="text" name="location" class="form-control"
+                 value="{{ profile.location or '' }}" placeholder="Mumbai, India" maxlength="200"/>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Email</label>
+          <input type="email" class="form-control" value="{{ user.email }}" disabled/>
+          <div class="form-text">Email is managed in your account settings.</div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">LinkedIn URL</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-linkedin text-primary"></i></span>
+            <input type="url" name="linkedin" class="form-control"
+                   value="{{ profile.linkedin or '' }}" placeholder="https://linkedin.com/in/yourprofile"/>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">GitHub URL</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-github"></i></span>
+            <input type="url" name="github" class="form-control"
+                   value="{{ profile.github or '' }}" placeholder="https://github.com/yourhandle"/>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Website / Portfolio URL</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-globe2"></i></span>
+            <input type="url" name="website" class="form-control"
+                   value="{{ profile.website or '' }}" placeholder="https://yoursite.com"/>
+          </div>
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold">Professional Summary <span class="text-secondary small fw-normal">(optional – AI will generate one if empty)</span></label>
+          <textarea name="summary" class="form-control" rows="4"
+                    placeholder="Brief about yourself..." maxlength="2000">{{ profile.summary or '' }}</textarea>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Profile Picture</label>
+          <input type="file" name="picture" class="form-control" accept="image/*"/>
+          {% if profile.profile_picture %}
+          <img src="{{ profile.profile_picture }}" alt="Profile" class="mt-2 rounded-circle" width="60" height="60" style="object-fit:cover"/>
+          {% endif %}
+        </div>
+        <div class="col-12 mt-2">
+          <button type="submit" class="btn btn-primary px-4">
+            <i class="bi bi-save me-2"></i>Save Profile
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

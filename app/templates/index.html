@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}AI Resume & Portfolio Builder – Land Your Dream Job{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<section class="hero-section text-center py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="hero-badge mb-3">
+        <span class="badge bg-primary-subtle text-primary fs-6 px-3 py-2 rounded-pill">
+          <i class="bi bi-stars me-1"></i>AI-Powered · ATS-Friendly
+        </span>
+      </div>
+      <h1 class="display-4 fw-bold text-dark mb-3">
+        Build Resumes That<br/>
+        <span class="text-primary">Get You Hired</span>
+      </h1>
+      <p class="lead text-secondary mb-4">
+        Generate ATS-optimised resumes, personalised cover letters, and stunning portfolios
+        in minutes using Machine Learning and NLP — all fully editable.
+      </p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href="{{ url_for('auth.signup') }}" class="btn btn-primary btn-lg px-4">
+          <i class="bi bi-rocket-takeoff me-2"></i>Get Started Free
+        </a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary btn-lg px-4">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Log In
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<section class="py-4 border-top border-bottom bg-light rounded-3 my-4">
+  <div class="row text-center g-3">
+    <div class="col-6 col-md-3">
+      <div class="stat-number fw-bold text-primary fs-3">100%</div>
+      <div class="text-secondary small">ATS Compatible</div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-number fw-bold text-primary fs-3">8+</div>
+      <div class="text-secondary small">AI/ML Modules</div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-number fw-bold text-primary fs-3">PDF</div>
+      <div class="text-secondary small">Instant Download</div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-number fw-bold text-primary fs-3">Free</div>
+      <div class="text-secondary small">No Credit Card</div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="py-5">
+  <h2 class="text-center fw-bold mb-5">Everything You Need to Stand Out</h2>
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="feature-card card border-0 shadow-sm h-100 p-4">
+        <div class="feature-icon bg-primary-subtle rounded-3 p-3 d-inline-flex mb-3">
+          <i class="bi bi-file-earmark-text fs-3 text-primary"></i>
+        </div>
+        <h5 class="fw-bold">AI Resume Builder</h5>
+        <p class="text-secondary">Generate ATS-friendly resumes from your profile with real-time ATS score, improvement suggestions, and JD-match analysis.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card card border-0 shadow-sm h-100 p-4">
+        <div class="feature-icon bg-success-subtle rounded-3 p-3 d-inline-flex mb-3">
+          <i class="bi bi-envelope-open-text fs-3 text-success"></i>
+        </div>
+        <h5 class="fw-bold">Cover Letter Generator</h5>
+        <p class="text-secondary">Personalised cover letters tailored to your target company and role — generated with NLP and fully editable.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card card border-0 shadow-sm h-100 p-4">
+        <div class="feature-icon bg-warning-subtle rounded-3 p-3 d-inline-flex mb-3">
+          <i class="bi bi-briefcase-fill fs-3 text-warning"></i>
+        </div>
+        <h5 class="fw-bold">Portfolio Generator</h5>
+        <p class="text-secondary">Turn your projects and experience into a shareable digital portfolio — perfect for internship and job applications.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card card border-0 shadow-sm h-100 p-4">
+        <div class="feature-icon bg-info-subtle rounded-3 p-3 d-inline-flex mb-3">
+          <i class="bi bi-graph-up-arrow fs-3 text-info"></i>
+        </div>
+        <h5 class="fw-bold">ATS Score Prediction</h5>
+        <p class="text-secondary">ML-powered ATS scoring gives you a real score (0-100) based on keyword coverage, length, and JD alignment.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card card border-0 shadow-sm h-100 p-4">
+        <div class="feature-icon bg-danger-subtle rounded-3 p-3 d-inline-flex mb-3">
+          <i class="bi bi-search fs-3 text-danger"></i>
+        </div>
+        <h5 class="fw-bold">JD Match Analysis</h5>
+        <p class="text-secondary">Paste a job description and instantly see how well your resume matches using Sentence Transformers cosine similarity.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card card border-0 shadow-sm h-100 p-4">
+        <div class="feature-icon bg-purple-subtle rounded-3 p-3 d-inline-flex mb-3">
+          <i class="bi bi-download fs-3 text-purple"></i>
+        </div>
+        <h5 class="fw-bold">PDF Download</h5>
+        <p class="text-secondary">Download your polished resume as a clean PDF with a single click. No watermarks. No sign-up walls.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section text-center py-5 bg-primary rounded-4 text-white my-4 px-3">
+  <h2 class="fw-bold mb-2">Ready to build your future?</h2>
+  <p class="lead mb-4 opacity-75">Create your free account and generate your first resume in under 5 minutes.</p>
+  <a href="{{ url_for('auth.signup') }}" class="btn btn-light btn-lg text-primary fw-bold px-5">
+    <i class="bi bi-person-plus me-2"></i>Create Free Account
+  </a>
+</section>
+
+{% endblock %}

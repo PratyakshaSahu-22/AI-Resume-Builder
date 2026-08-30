@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Projects – AI Resume Builder{% endblock %}
+{% block content %}
+
+<ul class="nav nav-tabs mb-4">
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.index') }}">Personal</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.education') }}">Education</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.skills') }}">Skills</a></li>
+  <li class="nav-item"><a class="nav-link active" href="{{ url_for('profile.projects') }}"><i class="bi bi-code-slash me-1"></i>Projects</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.experience') }}">Experience</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.certifications') }}">Certifications</a></li>
+</ul>
+
+{% if profile.projects %}
+<div class="mb-4">
+  {% for proj in profile.projects %}
+  <div class="card border-0 shadow-sm mb-3">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold mb-1">{{ proj.title }}</h6>
+          {% if proj.tech_stack %}
+          <div class="mb-1">
+            {% for tech in proj.tech_stack.split(',') %}
+            <span class="badge bg-secondary-subtle text-secondary me-1">{{ tech.strip() }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+          <p class="text-secondary small mb-1">{{ proj.description }}</p>
+          <div class="small text-muted">
+            {% if proj.start_date %}{{ proj.start_date }}{% endif %}
+            {% if proj.end_date %} – {{ proj.end_date }}{% endif %}
+            {% if proj.github_url %} · <a href="{{ proj.github_url }}" target="_blank"><i class="bi bi-github me-1"></i>GitHub</a>{% endif %}
+            {% if proj.live_url %} · <a href="{{ proj.live_url }}" target="_blank"><i class="bi bi-box-arrow-up-right me-1"></i>Live</a>{% endif %}
+          </div>
+        </div>
+        <form method="POST" action="{{ url_for('profile.projects') }}" class="d-inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <input type="hidden" name="action" value="delete"/>
+          <input type="hidden" name="project_id" value="{{ proj.id }}"/>
+          <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove?')">
+            <i class="bi bi-trash"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">No projects yet. Add your first project below.</div>
+{% endif %}
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white py-3">
+    <h5 class="mb-0 fw-bold"><i class="bi bi-plus-circle me-2 text-primary"></i>Add Project</h5>
+  </div>
+  <div class="card-body p-4">
+    <form method="POST" action="{{ url_for('profile.projects') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <input type="hidden" name="action" value="add"/>
+      <div class="row g-3">
+        <div class="col-md-8">
+          <label class="form-label fw-semibold">Project Title *</label>
+          <input type="text" name="title" class="form-control" required placeholder="AI Chatbot, E-Commerce App..."/>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Tech Stack (comma-separated)</label>
+          <input type="text" name="tech_stack" class="form-control" placeholder="Python, Flask, React"/>
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold">Description</label>
+          <textarea name="description" class="form-control" rows="3"
+                    placeholder="Describe what you built, your role, and its impact..."></textarea>
+          <div class="form-text"><i class="bi bi-stars text-primary"></i> AI will enhance this description when generating your resume.</div>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Start Date</label>
+          <input type="text" name="start_date" class="form-control" placeholder="Jan 2024"/>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">End Date</label>
+          <input type="text" name="end_date" class="form-control" placeholder="Mar 2024 / Present"/>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">GitHub URL</label>
+          <input type="url" name="github_url" class="form-control" placeholder="https://github.com/..."/>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Live URL</label>
+          <input type="url" name="live_url" class="form-control" placeholder="https://yourproject.com"/>
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Add Project</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

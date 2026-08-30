@@ -1,0 +1,108 @@
+/* ─── AI Resume Builder – Custom Styles ──────────────────────────────────── */
+
+/* Smooth transitions */
+* { transition: box-shadow 0.15s ease, border-color 0.15s ease; }
+
+/* Body */
+body {
+  background-color: #f7f8fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main { flex: 1; }
+
+/* ─── Navbar ─────────────────────────────────────────────────────────────── */
+.navbar { border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+/* ─── Cards ──────────────────────────────────────────────────────────────── */
+.card {
+  border-radius: 12px;
+}
+.card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* ─── Dashboard action cards ─────────────────────────────────────────────── */
+.dashboard-action-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+.dashboard-action-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* ─── Feature cards (landing page) ──────────────────────────────────────── */
+.feature-card { border-radius: 14px; }
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
+}
+
+/* ─── Hero section ───────────────────────────────────────────────────────── */
+.hero-section {
+  padding: 60px 0 40px;
+}
+.hero-badge .badge {
+  font-size: 0.9rem;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff !important;
+}
+
+/* ─── CTA section ────────────────────────────────────────────────────────── */
+.cta-section {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+}
+
+/* ─── Skill tags (profile) ───────────────────────────────────────────────── */
+.skill-tag {
+  font-size: 13px;
+}
+
+/* ─── Progress bars ──────────────────────────────────────────────────────── */
+.progress { border-radius: 6px; background: #e5e7eb; }
+.progress-bar { border-radius: 6px; }
+
+/* ─── Resume Preview page ────────────────────────────────────────────────── */
+@media (max-width: 576px) {
+  .resume-preview { padding: 20px 16px; }
+}
+
+/* ─── Form controls ──────────────────────────────────────────────────────── */
+.form-control:focus, .form-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
+.btn { border-radius: 8px; font-weight: 500; }
+.btn-primary { background: #2563eb; border-color: #2563eb; }
+.btn-primary:hover { background: #1d4ed8; border-color: #1d4ed8; }
+
+/* ─── Badge utils ────────────────────────────────────────────────────────── */
+.bg-primary-subtle { background-color: #eff6ff; }
+.bg-success-subtle { background-color: #f0fdf4; }
+.bg-warning-subtle { background-color: #fffbeb; }
+.bg-danger-subtle  { background-color: #fef2f2; }
+.bg-info-subtle    { background-color: #f0f9ff; }
+.text-purple       { color: #7c3aed; }
+.bg-purple-subtle  { background-color: #f5f3ff; }
+
+/* ─── Nav Tabs ───────────────────────────────────────────────────────────── */
+.nav-tabs .nav-link {
+  color: #6b7280;
+  border-radius: 8px 8px 0 0;
+  font-weight: 500;
+}
+.nav-tabs .nav-link.active {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* ─── Stat numbers (dashboard) ───────────────────────────────────────────── */
+.stat-number { letter-spacing: -1px; }
+
+/* ─── Footer ─────────────────────────────────────────────────────────────── */
+footer { margin-top: auto; }

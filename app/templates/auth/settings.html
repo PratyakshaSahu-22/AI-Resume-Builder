@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}Account Settings – AI Resume Builder{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+
+    <h3 class="fw-bold mb-1"><i class="bi bi-gear-fill text-primary me-2"></i>Account Settings</h3>
+    <p class="text-secondary mb-4">Update your username, email address, or password.</p>
+
+    <!-- ── Change Username ──────────────────────────────────────────────── -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white py-3 border-bottom">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-person-badge me-2 text-primary"></i>Change Username</h5>
+      </div>
+      <div class="card-body p-4">
+        <p class="text-secondary small mb-3">
+          Current username: <strong class="text-dark">{{ user.username }}</strong>
+        </p>
+        <form method="POST" action="{{ url_for('settings.index') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <input type="hidden" name="action" value="change_username"/>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">New Username</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-person"></i></span>
+              <input type="text" name="username" class="form-control"
+                     placeholder="Enter new username"
+                     minlength="3" maxlength="80" required/>
+            </div>
+            <div class="form-text">Minimum 3 characters. No spaces allowed.</div>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save me-2"></i>Update Username
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Change Email ─────────────────────────────────────────────────── -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white py-3 border-bottom">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-envelope me-2 text-success"></i>Change Email</h5>
+      </div>
+      <div class="card-body p-4">
+        <p class="text-secondary small mb-3">
+          Current email: <strong class="text-dark">{{ user.email }}</strong>
+        </p>
+        <form method="POST" action="{{ url_for('settings.index') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <input type="hidden" name="action" value="change_email"/>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">New Email Address</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+              <input type="email" name="email" class="form-control"
+                     placeholder="Enter new email address"
+                     maxlength="120" required/>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-save me-2"></i>Update Email
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Change Password ──────────────────────────────────────────────── -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white py-3 border-bottom">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-lock me-2 text-warning"></i>Change Password</h5>
+      </div>
+      <div class="card-body p-4">
+        <form method="POST" action="{{ url_for('settings.index') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <input type="hidden" name="action" value="change_password"/>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Current Password</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-lock"></i></span>
+              <input type="password" name="current_password" class="form-control"
+                     placeholder="Enter your current password" required/>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">New Password</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+              <input type="password" name="new_password" id="newPw" class="form-control"
+                     placeholder="Min 8 chars, 1 uppercase, 1 digit" required/>
+              <button class="btn btn-outline-secondary" type="button" id="toggleNewPw">
+                <i class="bi bi-eye" id="newPwIcon"></i>
+              </button>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Confirm New Password</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+              <input type="password" name="confirm_password" class="form-control"
+                     placeholder="Repeat new password" required/>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-warning fw-semibold">
+            <i class="bi bi-shield-lock me-2"></i>Change Password
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Account Info ─────────────────────────────────────────────────── -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white py-3 border-bottom">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-info-circle me-2 text-info"></i>Account Info</h5>
+      </div>
+      <div class="card-body p-4">
+        <div class="row g-2 small">
+          <div class="col-6 text-secondary">Account ID</div>
+          <div class="col-6 text-dark fw-semibold">#{{ user.id }}</div>
+          <div class="col-6 text-secondary">Member Since</div>
+          <div class="col-6 text-dark fw-semibold">{{ user.created_at.strftime('%d %b %Y') }}</div>
+          <div class="col-6 text-secondary">Account Status</div>
+          <div class="col-6">
+            <span class="badge bg-success-subtle text-success">Active</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Danger Zone – Delete Account ─────────────────────────────────── -->
+    <div class="card border-danger mb-4">
+      <div class="card-header bg-danger bg-opacity-10 py-3 border-bottom border-danger border-opacity-25">
+        <h5 class="mb-0 fw-bold text-danger">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>Danger Zone – Delete Account
+        </h5>
+      </div>
+      <div class="card-body p-4">
+        <div class="alert alert-danger d-flex gap-2 align-items-start">
+          <i class="bi bi-exclamation-circle-fill mt-1 flex-shrink-0"></i>
+          <div>
+            <strong>This action is permanent and cannot be undone.</strong><br/>
+            Deleting your account will permanently remove:
+            <ul class="mb-0 mt-1 small">
+              <li>Your profile, education, skills, projects, experience and certifications</li>
+              <li>All your resumes and ATS scores</li>
+              <li>All your cover letters</li>
+              <li>All your portfolios</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Collapsed form – shown only after clicking the button -->
+        <button class="btn btn-outline-danger" type="button"
+                data-bs-toggle="collapse" data-bs-target="#deleteAccountForm">
+          <i class="bi bi-trash me-2"></i>I want to delete my account
+        </button>
+
+        <div class="collapse mt-4" id="deleteAccountForm">
+          <div class="card card-body border-danger bg-danger bg-opacity-10">
+            <p class="fw-semibold mb-2">
+              To confirm, type your username <strong class="text-danger">{{ user.username }}</strong> below:
+            </p>
+            <form method="POST" action="{{ url_for('settings.delete_account') }}"
+                  onsubmit="return confirm('Are you absolutely sure? This CANNOT be undone.');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <div class="mb-3">
+                <input type="text" name="confirm_delete" class="form-control border-danger"
+                       placeholder="Type your username to confirm" required autocomplete="off"/>
+              </div>
+              <button type="submit" class="btn btn-danger fw-semibold">
+                <i class="bi bi-trash-fill me-2"></i>Permanently Delete My Account
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+    </a>
+
+  </div>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+document.getElementById('toggleNewPw').addEventListener('click', function () {
+  const pw = document.getElementById('newPw');
+  const icon = document.getElementById('newPwIcon');
+  if (pw.type === 'password') {
+    pw.type = 'text';
+    icon.classList.replace('bi-eye', 'bi-eye-slash');
+  } else {
+    pw.type = 'password';
+    icon.classList.replace('bi-eye-slash', 'bi-eye');
+  }
+});
+</script>
+{% endblock %}

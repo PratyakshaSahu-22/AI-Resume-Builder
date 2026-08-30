@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Upload & Parse Resume – AI Resume Builder{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="text-center mb-4">
+      <i class="bi bi-cloud-upload fs-1 text-primary"></i>
+      <h3 class="fw-bold mt-2">Resume Parser</h3>
+      <p class="text-secondary">Upload an existing PDF or DOCX resume to extract skills, contact info, and get an ATS score.</p>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-4">
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('parser.upload') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Upload Resume (PDF or DOCX, max 5 MB)</label>
+            <input type="file" name="resume_file" class="form-control" accept=".pdf,.docx" required/>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search me-2"></i>Parse &amp; Analyse
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {% if result %}
+    <!-- Results -->
+    <div class="row g-3 mb-3">
+      <div class="col-md-4 text-center">
+        <div class="card border-0 shadow-sm p-3">
+          <div class="small text-muted">ATS Score</div>
+          <div class="display-5 fw-bold {% if result.ats.ats_score >= 70 %}text-success{% elif result.ats.ats_score >= 45 %}text-warning{% else %}text-danger{% endif %}">
+            {{ result.ats.ats_score | int }}
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 text-center">
+        <div class="card border-0 shadow-sm p-3">
+          <div class="small text-muted">Category</div>
+          <div class="fw-bold text-primary mt-1">{{ result.category }}</div>
+        </div>
+      </div>
+      <div class="col-md-4 text-center">
+        <div class="card border-0 shadow-sm p-3">
+          <div class="small text-muted">Word Count</div>
+          <div class="fw-bold mt-1">{{ result.ats.word_count }}</div>
+        </div>
+      </div>
+    </div>
+
+    {% if result.contact.email or result.contact.phone %}
+    <div class="card border-0 shadow-sm mb-3">
+      <div class="card-body p-3">
+        <h6 class="fw-bold mb-2"><i class="bi bi-person me-2 text-primary"></i>Extracted Contact Info</h6>
+        {% if result.contact.email %}<div class="small"><strong>Email:</strong> {{ result.contact.email }}</div>{% endif %}
+        {% if result.contact.phone %}<div class="small"><strong>Phone:</strong> {{ result.contact.phone }}</div>{% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="card border-0 shadow-sm mb-3">
+      <div class="card-body p-3">
+        <h6 class="fw-bold mb-2"><i class="bi bi-lightning me-2 text-primary"></i>Extracted Skills</h6>
+        {% if result.skills.technical %}
+        <div class="mb-2">
+          <div class="small fw-semibold text-secondary mb-1">Technical Skills</div>
+          {% for s in result.skills.technical %}
+          <span class="badge bg-primary-subtle text-primary me-1">{{ s }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if result.skills.soft %}
+        <div>
+          <div class="small fw-semibold text-secondary mb-1">Soft Skills</div>
+          {% for s in result.skills.soft %}
+          <span class="badge bg-success-subtle text-success me-1">{{ s }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-3">
+        <h6 class="fw-bold mb-2"><i class="bi bi-file-text me-2 text-primary"></i>Extracted Text Preview</h6>
+        <pre class="bg-light p-3 rounded small" style="white-space:pre-wrap;max-height:300px;overflow-y:auto;">{{ result.text }}</pre>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

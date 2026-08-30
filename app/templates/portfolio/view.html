@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{{ user.username }}'s Portfolio</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+<style>
+  :root { --accent: #2563eb; --dark: #111827; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; color: var(--dark); }
+  .hero { background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); color: #fff; padding: 80px 0; }
+  .section-title { font-weight: 700; font-size: 1.4rem; margin-bottom: 1.5rem; }
+  .skill-badge { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; border-radius: 4px; padding: 3px 12px; font-size: 13px; }
+  .project-card { border-left: 4px solid var(--accent); border-radius: 4px; }
+  .section { padding: 60px 0; }
+  .section:nth-child(even) { background: #f9fafb; }
+  #contact a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container text-center">
+    <h1 class="display-5 fw-bold mb-3">{{ user.username }}</h1>
+    <p class="lead opacity-75 mb-4">{{ portfolio.about[:200] if portfolio.about else '' }}</p>
+    {% if contact.get('linkedin') or contact.get('github') %}
+    <div class="d-flex gap-3 justify-content-center">
+      {% if contact.get('linkedin') %}<a href="{{ contact.linkedin }}" target="_blank" class="btn btn-outline-light btn-sm"><i class="bi bi-linkedin me-1"></i>LinkedIn</a>{% endif %}
+      {% if contact.get('github') %}<a href="{{ contact.github }}" target="_blank" class="btn btn-outline-light btn-sm"><i class="bi bi-github me-1"></i>GitHub</a>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- About -->
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="section-title"><i class="bi bi-person-circle me-2 text-primary"></i>About Me</div>
+        <p class="lead text-secondary">{{ portfolio.about }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Skills -->
+{% if skills %}
+<section class="section" id="skills">
+  <div class="container">
+    <div class="section-title text-center"><i class="bi bi-lightning me-2 text-primary"></i>Skills</div>
+    <div class="row justify-content-center g-3">
+      {% for category, skill_list in skills.items() %}
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm p-3 h-100">
+          <div class="fw-semibold mb-2 text-primary">{{ category }}</div>
+          <div class="d-flex flex-wrap gap-1">
+            {% for skill in skill_list %}
+            <span class="skill-badge">{{ skill }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Projects -->
+{% if projects %}
+<section class="section" id="projects">
+  <div class="container">
+    <div class="section-title text-center"><i class="bi bi-code-slash me-2 text-primary"></i>Projects</div>
+    <div class="row g-4">
+      {% for proj in projects %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm project-card h-100 p-4">
+          <h6 class="fw-bold mb-1">{{ proj.title }}</h6>
+          {% if proj.tech_stack %}
+          <div class="mb-2">
+            {% for t in proj.tech_stack.split(',') %}
+            <span class="badge bg-secondary-subtle text-secondary me-1 small">{{ t.strip() }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+          <p class="text-secondary small mb-2">{{ proj.ai_enhanced_description or proj.description or '' }}</p>
+          <div class="mt-auto d-flex gap-2">
+            {% if proj.github_url %}<a href="{{ proj.github_url }}" target="_blank" class="btn btn-sm btn-outline-dark"><i class="bi bi-github me-1"></i>Code</a>{% endif %}
+            {% if proj.live_url %}<a href="{{ proj.live_url }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-box-arrow-up-right me-1"></i>Live</a>{% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Experience -->
+{% if experience %}
+<section class="section" id="experience">
+  <div class="container">
+    <div class="section-title text-center"><i class="bi bi-briefcase me-2 text-primary"></i>Experience</div>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        {% for exp in experience %}
+        <div class="card border-0 shadow-sm mb-3 p-4">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div>
+              <h6 class="fw-bold mb-0">{{ exp.role }}</h6>
+              <div class="text-primary">{{ exp.company }}</div>
+              {% if exp.description %}<p class="text-secondary small mt-2 mb-0">{{ exp.description }}</p>{% endif %}
+            </div>
+            <div class="text-secondary small">{{ exp.start_date or '' }}{% if exp.end_date %} – {{ exp.end_date }}{% endif %}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Contact -->
+<section class="section bg-dark text-white" id="contact">
+  <div class="container text-center">
+    <div class="section-title"><i class="bi bi-envelope me-2"></i>Get In Touch</div>
+    <div class="d-flex gap-4 justify-content-center flex-wrap">
+      {% if contact.get('email') %}<a href="mailto:{{ contact.email }}" class="text-white-50"><i class="bi bi-envelope me-1"></i>{{ contact.email }}</a>{% endif %}
+      {% if contact.get('phone') %}<span class="text-white-50"><i class="bi bi-telephone me-1"></i>{{ contact.phone }}</span>{% endif %}
+      {% if contact.get('location') %}<span class="text-white-50"><i class="bi bi-geo-alt me-1"></i>{{ contact.location }}</span>{% endif %}
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

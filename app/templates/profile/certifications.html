@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Certifications – AI Resume Builder{% endblock %}
+{% block content %}
+
+<ul class="nav nav-tabs mb-4">
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.index') }}">Personal</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.education') }}">Education</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.skills') }}">Skills</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.projects') }}">Projects</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.experience') }}">Experience</a></li>
+  <li class="nav-item"><a class="nav-link active" href="{{ url_for('profile.certifications') }}"><i class="bi bi-award me-1"></i>Certifications</a></li>
+</ul>
+
+{% if profile.certifications %}
+<div class="mb-4">
+  {% for cert in profile.certifications %}
+  <div class="card border-0 shadow-sm mb-3">
+    <div class="card-body d-flex justify-content-between flex-wrap gap-2">
+      <div>
+        <h6 class="fw-bold mb-0">{{ cert.name }}</h6>
+        {% if cert.issuing_org %}<div class="text-primary small">{{ cert.issuing_org }}</div>{% endif %}
+        <div class="small text-muted">
+          Issued: {{ cert.issue_date or '–' }}
+          {% if cert.expiry_date %} · Expires: {{ cert.expiry_date }}{% endif %}
+          {% if cert.credential_id %} · ID: {{ cert.credential_id }}{% endif %}
+        </div>
+        {% if cert.credential_url %}
+        <a href="{{ cert.credential_url }}" target="_blank" class="small">
+          <i class="bi bi-box-arrow-up-right me-1"></i>View Credential
+        </a>
+        {% endif %}
+      </div>
+      <form method="POST" action="{{ url_for('profile.certifications') }}" class="d-inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="action" value="delete"/>
+        <input type="hidden" name="cert_id" value="{{ cert.id }}"/>
+        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove?')">
+          <i class="bi bi-trash"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">No certifications yet. Add your Coursera, AWS, Google, or NPTEL certificates.</div>
+{% endif %}
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white py-3">
+    <h5 class="mb-0 fw-bold"><i class="bi bi-plus-circle me-2 text-primary"></i>Add Certification</h5>
+  </div>
+  <div class="card-body p-4">
+    <form method="POST" action="{{ url_for('profile.certifications') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <input type="hidden" name="action" value="add"/>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Certification Name *</label>
+          <input type="text" name="name" class="form-control" required placeholder="AWS Solutions Architect Associate"/>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Issuing Organisation</label>
+          <input type="text" name="issuing_org" class="form-control" placeholder="Amazon Web Services, Coursera, Google..."/>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Issue Date</label>
+          <input type="text" name="issue_date" class="form-control" placeholder="Jan 2024"/>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Expiry Date</label>
+          <input type="text" name="expiry_date" class="form-control" placeholder="Jan 2027 / No Expiry"/>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Credential ID</label>
+          <input type="text" name="credential_id" class="form-control" placeholder="ABC123XYZ"/>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Credential URL</label>
+          <input type="url" name="credential_url" class="form-control" placeholder="https://credential.link"/>
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Add Certification</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

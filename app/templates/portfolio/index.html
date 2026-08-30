@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}My Portfolios – AI Resume Builder{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <h3 class="fw-bold mb-0"><i class="bi bi-briefcase-fill text-warning me-2"></i>Portfolios</h3>
+  <a href="{{ url_for('portfolio.generate') }}" class="btn btn-primary">
+    <i class="bi bi-plus-circle me-2"></i>Generate Portfolio
+  </a>
+</div>
+
+{% if portfolios %}
+<div class="row g-3">
+  {% for p in portfolios %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h6 class="fw-bold mb-0">Portfolio #{{ p.id }}</h6>
+          {% if p.is_published %}
+          <span class="badge bg-success">Published</span>
+          {% else %}
+          <span class="badge bg-secondary">Draft</span>
+          {% endif %}
+        </div>
+        <div class="small text-muted mb-3"><i class="bi bi-calendar3 me-1"></i>{{ p.updated_at.strftime('%b %d, %Y') }}</div>
+        <div class="d-flex gap-2 flex-wrap">
+          <a href="{{ url_for('portfolio.edit', portfolio_id=p.id) }}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-pencil me-1"></i>Edit
+          </a>
+          {% if p.is_published %}
+          <a href="{{ url_for('portfolio.view', portfolio_id=p.id) }}" class="btn btn-sm btn-outline-success" target="_blank">
+            <i class="bi bi-box-arrow-up-right me-1"></i>View
+          </a>
+          {% endif %}
+          <form method="POST" action="{{ url_for('portfolio.delete', portfolio_id=p.id) }}" class="d-inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete?')">
+              <i class="bi bi-trash"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+  <i class="bi bi-briefcase display-1 text-muted"></i>
+  <h5 class="mt-3 text-secondary">No portfolios yet</h5>
+  <p class="text-muted">Generate a digital portfolio from your profile in one click.</p>
+  <a href="{{ url_for('portfolio.generate') }}" class="btn btn-warning mt-2 text-white">
+    <i class="bi bi-stars me-2"></i>Generate Portfolio
+  </a>
+</div>
+{% endif %}
+{% endblock %}

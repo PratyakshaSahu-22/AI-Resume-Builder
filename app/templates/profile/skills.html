@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Skills – AI Resume Builder{% endblock %}
+{% block content %}
+
+<ul class="nav nav-tabs mb-4">
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.index') }}"><i class="bi bi-person me-1"></i>Personal</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.education') }}"><i class="bi bi-mortarboard me-1"></i>Education</a></li>
+  <li class="nav-item"><a class="nav-link active" href="{{ url_for('profile.skills') }}"><i class="bi bi-lightning me-1"></i>Skills</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.projects') }}"><i class="bi bi-code-slash me-1"></i>Projects</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.experience') }}"><i class="bi bi-briefcase me-1"></i>Experience</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.certifications') }}"><i class="bi bi-award me-1"></i>Certifications</a></li>
+</ul>
+
+<!-- Current Skills -->
+{% if profile.skills %}
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body p-4">
+    <h5 class="fw-bold mb-3"><i class="bi bi-tags me-2 text-primary"></i>Your Skills</h5>
+    <div class="d-flex flex-wrap gap-2">
+      {% for skill in profile.skills %}
+      <div class="skill-tag d-flex align-items-center gap-2 px-3 py-1 bg-primary-subtle rounded-pill border border-primary-subtle">
+        <span class="fw-semibold text-primary small">{{ skill.name }}</span>
+        {% if skill.category %}<span class="text-muted small">· {{ skill.category }}</span>{% endif %}
+        {% if skill.proficiency %}<span class="badge bg-secondary-subtle text-secondary small rounded-pill">{{ skill.proficiency }}</span>{% endif %}
+        <form method="POST" action="{{ url_for('profile.skills') }}" class="d-inline ms-1">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <input type="hidden" name="action" value="delete"/>
+          <input type="hidden" name="skill_id" value="{{ skill.id }}"/>
+          <button type="submit" class="btn btn-link btn-sm p-0 text-danger" onclick="return confirm('Remove?')" title="Remove">
+            <i class="bi bi-x-circle"></i>
+          </button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="alert alert-info">No skills added yet. Add your first skill below.</div>
+{% endif %}
+
+<!-- Add Skill -->
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white border-bottom py-3">
+    <h5 class="mb-0 fw-bold"><i class="bi bi-plus-circle me-2 text-primary"></i>Add Skill</h5>
+  </div>
+  <div class="card-body p-4">
+    <form method="POST" action="{{ url_for('profile.skills') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <input type="hidden" name="action" value="add"/>
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Skill Name *</label>
+          <input type="text" name="name" class="form-control" required placeholder="Python, React, TensorFlow..."/>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Category</label>
+          <select name="category" class="form-select">
+            <option value="">Select category</option>
+            <option value="Programming">Programming</option>
+            <option value="Web Development">Web Development</option>
+            <option value="Data Science">Data Science</option>
+            <option value="AI/ML">AI/ML</option>
+            <option value="DevOps">DevOps</option>
+            <option value="Database">Database</option>
+            <option value="Tools">Tools</option>
+            <option value="Soft Skills">Soft Skills</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Proficiency</label>
+          <select name="proficiency" class="form-select">
+            <option value="">Select level</option>
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+            <option value="Expert">Expert</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-primary w-100"><i class="bi bi-plus me-1"></i>Add</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Generate Resume – AI Resume Builder{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="text-center mb-4">
+      <i class="bi bi-stars fs-1 text-primary"></i>
+      <h3 class="fw-bold mt-2">Generate AI Resume</h3>
+      <p class="text-secondary">Your profile data will be used to generate an ATS-friendly resume with ML scoring.</p>
+    </div>
+
+    <!-- Profile Readiness -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h6 class="fw-bold mb-3"><i class="bi bi-clipboard-check me-2 text-primary"></i>Profile Readiness</h6>
+        <div class="row g-2">
+          <div class="col-6">
+            <div class="d-flex align-items-center gap-2 small {% if profile and profile.full_name %}text-success{% else %}text-danger{% endif %}">
+              <i class="bi {% if profile and profile.full_name %}bi-check-circle-fill{% else %}bi-x-circle-fill{% endif %}"></i>
+              Personal Info
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="d-flex align-items-center gap-2 small {% if profile and profile.education %}text-success{% else %}text-warning{% endif %}">
+              <i class="bi {% if profile and profile.education %}bi-check-circle-fill{% else %}bi-exclamation-circle{% endif %}"></i>
+              Education ({{ profile.education | length if profile else 0 }} entries)
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="d-flex align-items-center gap-2 small {% if profile and profile.skills %}text-success{% else %}text-warning{% endif %}">
+              <i class="bi {% if profile and profile.skills %}bi-check-circle-fill{% else %}bi-exclamation-circle{% endif %}"></i>
+              Skills ({{ profile.skills | length if profile else 0 }} skills)
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="d-flex align-items-center gap-2 small {% if profile and profile.projects %}text-success{% else %}text-warning{% endif %}">
+              <i class="bi {% if profile and profile.projects %}bi-check-circle-fill{% else %}bi-exclamation-circle{% endif %}"></i>
+              Projects ({{ profile.projects | length if profile else 0 }} projects)
+            </div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <a href="{{ url_for('profile.index') }}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-pencil me-1"></i>Edit Profile
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate Form -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <form method="POST" action="{{ url_for('resume.generate') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Resume Title</label>
+            <input type="text" name="title" class="form-control" value="My Resume" placeholder="e.g. Software Engineer Resume" maxlength="200"/>
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-semibold">
+              Job Description (optional)
+              <span class="text-secondary small fw-normal">– Paste JD for ATS score + keyword matching</span>
+            </label>
+            <textarea name="job_description" class="form-control" rows="6"
+              placeholder="Paste the job description here to get ATS score, JD match %, and missing keyword suggestions..."></textarea>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg fw-semibold">
+              <i class="bi bi-stars me-2"></i>Generate My Resume with AI
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
